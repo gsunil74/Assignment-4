@@ -28,32 +28,39 @@ import org.json.simple.JSONObject;
  */
 /**
  *
- * @author C0648301
+ * @author C0631942
  */
 @Path("products")
-public class products {
-
+public class products 
+{
     @GET
     @Produces("application/json")
-    public String doGET(@QueryParam("PRODUCT_ID") String id) {
-        if (id == null) {
+    public String doGET(@QueryParam("PRODUCT_ID") String id) 
+    {
+        if (id == null) 
+        {
             return (getResults("SELECT * FROM PRODUCT"));
-        } else {
+        } 
+        else 
+        {
             return (getResults("SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?", id));
         }
     }
 
-    private String getResults(String query, String... params) {
+    private String getResults(String query, String... params) 
+    {
         JSONArray jArray = new JSONArray();
         StringBuilder sb = new StringBuilder();
-        try (Connection cn = credentials.getConnection()) {
+        try (Connection cn = credentials.getConnection()) 
+        {
             PreparedStatement pstmt = cn.prepareStatement(query);
-            for (int i = 1; i <= params.length; i++) {
+            for (int i = 1; i <= params.length; i++) 
+            {
                 pstmt.setString(i, params[i - 1]);
             }
             ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
+            while (rs.next()) 
+            {
                 JSONObject json = new JSONObject();
                 json.put("PRODUCT_ID", rs.getInt("PRODUCT_ID"));
                 json.put("PRODUCT_NAME", rs.getString("PRODUCT_NAME"));
@@ -62,21 +69,28 @@ public class products {
                 jArray.add(json);
             }
 
-        } catch (SQLException ex) {
+        } 
+        catch (SQLException ex) 
+        {
             Logger.getLogger(products.class.getName()).log(Level.SEVERE, null, ex);
         }
         return jArray.toJSONString();
     }
 
-    private int doUpdate(String query, String... params) {
+    private int doUpdate(String query, String... params) 
+    {
         int changes = 0;
-        try (Connection cn = credentials.getConnection()) {
+        try (Connection cn = credentials.getConnection()) 
+        {
             PreparedStatement pstmt = cn.prepareStatement(query);
-            for (int i = 1; i <= params.length; i++) {
+            for (int i = 1; i <= params.length; i++) 
+            {
                 pstmt.setString(i, params[i - 1]);
             }
             changes = pstmt.executeUpdate();
-        } catch (SQLException ex) {
+        } 
+        catch (SQLException ex) 
+        {
             Logger.getLogger(products.class.getName()).log(Level.SEVERE, null, ex);
         }
         return changes;
@@ -84,7 +98,8 @@ public class products {
 
     @POST
     @Consumes("application/json")
-    public void post(String str) {
+    public void post(String str) 
+    {
         JsonObject json = Json.createReader(new StringReader(str)).readObject();
         int newid = json.getInt("PRODUCT_ID");
         String id = String.valueOf(newid);
@@ -98,7 +113,8 @@ public class products {
 
     @PUT
     @Consumes("application/json")
-    public void put(String str) {
+    public void put(String str) 
+    {
         JsonObject json = Json.createReader(new StringReader(str)).readObject();
         int newid = json.getInt("PRODUCT_ID");
         String id = String.valueOf(newid);
@@ -112,7 +128,8 @@ public class products {
 
     @DELETE
     @Consumes("application/json")
-    public void doDelete(@PathParam("id") String id) {
+    public void doDelete(@PathParam("id") String id) 
+    {
         doUpdate("DELETE FROM PRODUCT WHERE PRODUCT_ID=" + id);
     }
 }
